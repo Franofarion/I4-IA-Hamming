@@ -7,15 +7,15 @@ public class HammingTest {
 
     public void main(String[] args) {
         try {
-            testHammingClusters();
+            testHammingDistance();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @org.junit.Test
-    public final void testHammingClusters() throws Exception{
-        boolean[][] hamming = {
+    public final void testHammingDistance() throws Exception{
+        boolean[][] echantillon = {
                             {false,true,true,false},
                             {false,false,true,false},
                             {true,true,true,false},
@@ -28,8 +28,13 @@ public class HammingTest {
                             {true,true,false,true},
                         };
 
-        assertEquals(false,hamming[0][0]);
-        assertEquals(true,hamming[9][3]);
-        Hamming.hammingClusters(hamming);
+        assertEquals(false,echantillon[0][0]);
+        assertEquals(true,echantillon[9][3]);
+        Hamming.hammingClusters(Hamming.hammingDistance(echantillon));
+    }
+
+    @org.junit.Test
+    public final void testHammingClusters() throws Exception{
+//        Hamming.hammingClusters(hamming);
     }
 }
