@@ -1,6 +1,10 @@
 package test;
 
 import main.Hamming;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class HammingTest {
@@ -30,11 +34,21 @@ public class HammingTest {
 
         assertEquals(false,echantillon[0][0]);
         assertEquals(true,echantillon[9][3]);
-        Hamming.hammingClusters(Hamming.hammingDistance(echantillon));
+        System.out.println(Hamming.hammingClusters(Hamming.hammingDistance(echantillon)).toString());
     }
 
     @org.junit.Test
     public final void testHammingClusters() throws Exception{
 //        Hamming.hammingClusters(hamming);
     }
+
+ /*   @org.junit.Test
+    public final void testPushIfNotAlreadyExist() throws Exception{
+        List<Integer> test = new ArrayList<Integer>();
+        test.add(1);
+        test = Hamming.pushIfNotAlreadyExist(test,4);
+        System.out.println(test);
+        test = Hamming.pushIfNotAlreadyExist(test,5);
+        System.out.println(test);
+    }*/
 }
