@@ -5,39 +5,83 @@ import java.util.List;
 
 public class Hamming {
 
+
+    /**
+     *
+     * @param hamming, le tableau des distances de Hammings
+     * @param clusters, la liste de liste de nombre, qui représente la liste des clusteurs
+     * @param clusterNumber, le nombre de cluster que l'on souhaite dans notre liste 'clusters'
+     * @return
+     */
+    public static List<List<Integer>> hammingMain(int[][] hamming, List<List<Integer>> clusters, int clusterNumber){
+        if(clusters.size() >= clusterNumber){
+            return clusters;
+        } else {
+            if (clusters.size() <= 0) {
+                return hammingMain(hamming, hammingClusters(hamming, new ArrayList<>()), clusterNumber);
+            } else {
+                // GET THE LARGER LIST OF THE LIST (index)
+                int maxLength = 0;
+                List<Integer> biggerIndex = new ArrayList<>();
+                for (List<Integer> ind : clusters) {
+                    if (ind.size() > maxLength) {
+                        maxLength = ind.size();
+                        biggerIndex = ind;
+                    }
+                }
+                clusters.remove(biggerIndex);
+                List<List<Integer>> newIndex = hammingClusters(hamming, biggerIndex);
+                clusters.add(newIndex.get(0));
+                clusters.add(newIndex.get(1));
+                return hammingMain(hamming, clusters,clusterNumber);
+            }
+        }
+    }
+
     /**
      *
      * @param hamming
+     * @param index
      * @return
      */
-    public static List<List<Integer>> hammingClusters(int[][] hamming){
+    public static List<List<Integer>> hammingClusters(int[][] hamming, List<Integer> index){
         List<List<Integer>> clusters = new ArrayList<List<Integer>>(2);
         List<Integer> internalCluster = new ArrayList<Integer>();
         List<Integer> externalCluster = new ArrayList<Integer>();
-        double moyenne = 0;
-        int dividende = 0;
 
-        //Boucle for pour calculer la moyenne
-        for (int[] x: hamming) {
-            for(int y: x){
-                System.out.print(y + " / ");
-                moyenne += y;
-                dividende ++;
+        // Boucle servant à determiner la moitié entre la plus haute et la plus faible distance de Hamming de l'index demandé = half
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int x = 0; x < hamming.length; x++) {
+            for(int y = 0; y < hamming[x].length; y++){
+                if((index.contains(x) && index.contains(y)) || index.isEmpty()){
+                    max =  hamming[x][y] > max ? hamming[x][y] : max;
+                    min =  hamming[x][y] < min ? hamming[x][y] : min;
+                }
             }
-            System.out.println();
         }
-        // On fait la moyenne au dessus
-        moyenne = Math.ceil(moyenne / dividende);
-        System.out.println("moyenne = " + moyenne);
+        double half = Math.floor((max + min) / 2);
 
         // Boucle pour le clustering
         for (int i = 0; i < hamming.length; i++) {
+            double maxValue = 0;
+            for(int j = 0; j < hamming[i].length; j++) {
+                if((index.contains(i) && index.contains(j)) || index.isEmpty()) {
+                    maxValue = hamming[i][j] > maxValue ? hamming[i][j] : maxValue;
+                }
+            }
             for(int j = 0; j < hamming[i].length; j++){
-                //si la distance est supérieur à la moyenne, alors on ajoute l'index j au cluster externe
-
-                if(hamming[i][j] > moyenne && !internalCluster.contains(j) && !externalCluster.contains(i)){
-                    externalCluster = pushIfNotAlreadyExist(externalCluster, j);
-                    internalCluster = pushIfNotAlreadyExist(internalCluster, i);
+                if((index.contains(i) && index.contains(j)) || index.isEmpty()){
+                    if(!internalCluster.contains(j) && !externalCluster.contains(i) && i != j){
+                        //si la distance est supérieur à la moyenne,
+                        // ou si la taille du tableau d'index est égale à deux (car on est forcé d'avoir un index dans chaque cluster)
+                        // ou si la valeur maximal de la ligne est égale à la valeur half
+                        // alors on ajoute l'index j au cluster externe et i au cluster interne
+                        if((hamming[i][j] > half || index.size() == 2 || maxValue == half)){
+                            externalCluster = pushIfNotAlreadyExist(externalCluster, j);
+                            internalCluster = pushIfNotAlreadyExist(internalCluster, i);
+                        }
+                    }
                 }
             }
         }

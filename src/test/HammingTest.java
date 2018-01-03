@@ -34,7 +34,13 @@ public class HammingTest {
 
         assertEquals(false,echantillon[0][0]);
         assertEquals(true,echantillon[9][3]);
-        System.out.println(Hamming.hammingClusters(Hamming.hammingDistance(echantillon)).toString());
+
+
+        List<List<Integer>> list = new ArrayList<List<Integer>>();
+        assertEquals(0,list.size());
+
+        int[][] hammingArray = Hamming.hammingDistance(echantillon);
+        System.out.println(Hamming.hammingMain(hammingArray, list, 10).toString());
     }
 
     @org.junit.Test
